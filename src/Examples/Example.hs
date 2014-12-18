@@ -13,7 +13,7 @@ main = do
   let task = Task
                { taskName = "Install Haskell"
                , taskTags = []
-               , moduleCall = compile (AptModuleCall "ghc")
+               , moduleCall = compile (defaultApt "ghc")
                }
 
       playbook = Playbook

@@ -1,21 +1,28 @@
 module Data.Sansible where
 
 import Control.Applicative
+import Data.String
 import Data.Maybe
 import Data.Monoid
 import Data.Set
 import Data.Yaml ( (.=) )
 
 import qualified Data.ByteString.Char8 as BS
+import qualified Data.List as L
 import qualified Data.Text as T
 import qualified Data.Yaml as Y
-
 
 newtype HostPattern = HostPattern String deriving (Show, Y.ToJSON)
 newtype User = User String deriving (Show, Y.ToJSON)
 newtype Tag  = Tag String deriving (Show, Y.ToJSON, Ord, Eq)
 
-data CompiledModuleCall = CompiledModuleCall T.Text T.Text deriving Show
+newtype AnsibleKey   = AnsibleKey T.Text   deriving (Show, Y.ToJSON, IsString)
+newtype AnsibleValue = AnsibleValue T.Text deriving (Show, Y.ToJSON, IsString)
+
+data CompiledModuleCall = CompiledModuleCall
+                        { moduleName :: T.Text
+                        , moduleCallArgs :: [(AnsibleKey, AnsibleValue)]
+                        } deriving Show
 
 class ModuleCall m where
   compile :: m -> CompiledModuleCall
@@ -36,11 +43,12 @@ data Playbook = Playbook
 
 instance Y.ToJSON Task where
   toJSON t =
-    let (CompiledModuleCall moduleName args) = moduleCall t
+    let (CompiledModuleCall modName args) = moduleCall t
+        argsStr = T.unwords $ L.map (\ (AnsibleKey k, AnsibleValue v) -> k <> "=" <> v) args
     in  Y.object
-          [ "name"     .= taskName t
-          , "tags"     .= taskTags t
-          , moduleName .= args
+          [ "name"  .= taskName t
+          , "tags"  .= taskTags t
+          , modName .= argsStr
           ]
 
 instance Y.ToJSON Playbook where
