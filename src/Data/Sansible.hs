@@ -28,7 +28,7 @@ class ModuleCall m where
   compile :: m -> CompiledModuleCall
 
 data Task = Task
-  { taskName :: String
+  { taskName :: T.Text
   , taskTags :: [Tag]
   , moduleCall :: CompiledModuleCall
   } deriving (Show)
