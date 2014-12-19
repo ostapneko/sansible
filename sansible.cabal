@@ -24,7 +24,8 @@ library
                        OverloadedStrings,
                        TemplateHaskell
   exposed-modules:     Data.Sansible,
-                       AnsibleModules.Apt
+                       AnsibleModules.Apt,
+                       AnsibleModules.File
 
 executable sansible-vault
   main-is:             Main.hs
