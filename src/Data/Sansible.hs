@@ -3,18 +3,20 @@ module Data.Sansible where
 import Data.Maybe
 import Data.Monoid
 import Data.Set
+import Data.String
 import Data.Yaml ( (.=) )
 import Data.Char
 
-import qualified Data.Aeson.TH as A
+import qualified Data.Aeson.TH         as A
 import qualified Data.ByteString.Char8 as BS
-import qualified Data.Text as T
-import qualified Data.Yaml as Y
-import qualified Data.List as L
+import qualified Data.List             as L
+import qualified Data.Text             as T
+import qualified Data.Yaml             as Y
 
-newtype HostPattern = HostPattern String deriving (Show, Y.ToJSON)
-newtype User = User String deriving (Show, Y.ToJSON)
-newtype Tag  = Tag String deriving (Show, Y.ToJSON, Ord, Eq)
+newtype HostPattern = HostPattern String deriving (Show, Y.ToJSON, IsString)
+newtype User        = User String        deriving (Show, Y.ToJSON, IsString)
+newtype Group       = Group String       deriving (Show, Y.ToJSON, IsString)
+newtype Tag         = Tag String         deriving (Show, Y.ToJSON, IsString, Ord, Eq)
 
 data CompiledModuleCall = CompiledModuleCall
                         { moduleName         :: T.Text
@@ -30,6 +32,10 @@ data Task = Task
   , moduleCall :: CompiledModuleCall
   , taskTags :: [Tag]
   } deriving (Show)
+
+-- ^ shortcut to create a task without tags
+task :: T.Text -> CompiledModuleCall -> Task
+task n m = Task n m []
 
 data Playbook = Playbook
   { pbHosts     :: HostPattern
@@ -69,7 +75,13 @@ encodingOptions :: A.Options
 encodingOptions = A.defaultOptions
                 { A.fieldLabelModifier = snakeCase
                 , A.omitNothingFields = True
+                , A.constructorTagModifier = stripChoice
                 }
 
 encode :: [Playbook] -> BS.ByteString
 encode pbs = "---\n" <> Y.encode pbs
+
+stripChoice :: String -> String
+stripChoice str =
+  let lower = L.map toLower str
+  in fromMaybe lower (L.stripPrefix "choice lower" str)

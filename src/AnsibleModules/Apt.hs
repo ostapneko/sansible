@@ -1,5 +1,3 @@
-{-# LANGUAGE TemplateHaskell #-}
-
 module AnsibleModules.Apt where
 
 import Data.Sansible

@@ -21,7 +21,8 @@ library
   hs-source-dirs:      src
   default-language:    Haskell2010
   default-extensions:  GeneralizedNewtypeDeriving,
-                       OverloadedStrings
+                       OverloadedStrings,
+                       TemplateHaskell
   exposed-modules:     Data.Sansible,
                        AnsibleModules.Apt
 
