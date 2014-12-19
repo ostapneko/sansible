@@ -10,11 +10,9 @@ import qualified Data.ByteString.Char8 as BS
 
 main :: IO ()
 main = do
-  let task = Task
-               { taskName = "Install Haskell"
-               , taskTags = []
-               , moduleCall = compile (defaultApt "ghc")
-               }
+  let task = Task "Install Haskell"
+                  (aptInstall "ghc")
+                  []
 
       playbook = Playbook
                    { pbHosts    = HostPattern "localhost"
