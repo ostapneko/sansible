@@ -24,3 +24,15 @@ library
                        OverloadedStrings
   exposed-modules:     Data.Sansible,
                        AnsibleModules.Apt
+
+executable sansible-vault
+  main-is:             Main.hs
+  hs-source-dirs:      vaultSrc
+  build-depends:       base >= 4.6 && < 5,
+                       bytestring,
+                       cipher-aes,
+                       cryptohash,
+                       directory,
+                       filepath,
+                       DRBG
+  default-extensions:  OverloadedStrings
