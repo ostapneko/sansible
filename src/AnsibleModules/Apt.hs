@@ -48,6 +48,7 @@ $(A.deriveToJSON encodingOptions ''Apt)
 oneDay :: Int
 oneDay = 86400
 
+-- | Install an apt package
 aptInstall :: T.Text -> CompiledModuleCall
 aptInstall pkg = compile $
   defaultApt { name           = Just pkg
@@ -55,8 +56,14 @@ aptInstall pkg = compile $
              , updateCache    = Just False
              }
 
+-- | Update apt
 aptUpdate :: CompiledModuleCall
 aptUpdate = compile $
   defaultApt { cacheValidTime = Just oneDay
              , updateCache    = Just True
              }
+
+-- | Install a Debian package from file
+aptDebInstall :: FilePath -> CompiledModuleCall
+aptDebInstall path = compile $
+  defaultApt { deb = Just path }

@@ -19,10 +19,10 @@ import qualified Data.Yaml             as Y
 
 import Network.URI
 
-newtype HostPattern = HostPattern String deriving (Show, Y.ToJSON, IsString)
-newtype User        = User String        deriving (Show, Y.ToJSON, IsString)
-newtype Group       = Group String       deriving (Show, Y.ToJSON, IsString)
-newtype Tag         = Tag String         deriving (Show, Y.ToJSON, IsString, Ord, Eq)
+newtype HostPattern = HostPattern T.Text deriving (Show, Y.ToJSON, IsString)
+newtype User        = User T.Text        deriving (Show, Y.ToJSON, IsString)
+newtype Group       = Group T.Text       deriving (Show, Y.ToJSON, IsString)
+newtype Tag         = Tag T.Text         deriving (Show, Y.ToJSON, IsString, Ord, Eq)
 
 data CompiledModuleCall = CompiledModuleCall
                         { moduleName         :: T.Text
@@ -91,8 +91,8 @@ encode pbs = "---\n" <> Y.encode pbs
 
 stripChoice :: String -> String
 stripChoice str =
-  let lower = L.map toLower str
-  in fromMaybe lower (L.stripPrefix "choice lower" str)
+  let lower = snakeCase str
+  in fromMaybe lower (L.stripPrefix "choice_" lower)
 
 instance A.ToJSON URI where
   toJSON = A.toJSON . show
