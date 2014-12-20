@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -fno-warn-orphans #-}
 module Data.Sansible where
 
 import Data.Maybe
@@ -7,11 +8,14 @@ import Data.String
 import Data.Yaml ( (.=) )
 import Data.Char
 
+import qualified Data.Aeson            as A
 import qualified Data.Aeson.TH         as A
 import qualified Data.ByteString.Char8 as BS
 import qualified Data.List             as L
 import qualified Data.Text             as T
 import qualified Data.Yaml             as Y
+
+import Network.URI
 
 newtype HostPattern = HostPattern String deriving (Show, Y.ToJSON, IsString)
 newtype User        = User String        deriving (Show, Y.ToJSON, IsString)
@@ -67,9 +71,9 @@ instance Y.ToJSON Playbook where
 
 snakeCase :: String -> String
 snakeCase [] = []
-snakeCase (c : cs) = if isLower c
-                     then c : snakeCase cs
-                     else '_' : toLower c : snakeCase cs
+snakeCase (c : cs) = if isUpper c
+                     then '_' : toLower c : snakeCase cs
+                     else c : snakeCase cs
 
 encodingOptions :: A.Options
 encodingOptions = A.defaultOptions
@@ -85,3 +89,6 @@ stripChoice :: String -> String
 stripChoice str =
   let lower = L.map toLower str
   in fromMaybe lower (L.stripPrefix "choice lower" str)
+
+instance A.ToJSON URI where
+  toJSON = A.toJSON . show

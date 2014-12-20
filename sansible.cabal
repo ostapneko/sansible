@@ -14,6 +14,7 @@ library
                        aeson >= 0.8,
                        bytestring,
                        containers,
+                       network-uri >= 2.6 && < 3,
                        text,
                        unordered-containers,
                        yaml >= 0.8 && < 1.0
@@ -25,7 +26,8 @@ library
                        TemplateHaskell
   exposed-modules:     Data.Sansible,
                        AnsibleModules.Apt,
-                       AnsibleModules.File
+                       AnsibleModules.File,
+                       AnsibleModules.GetUrl
 
 executable sansible-vault
   main-is:             Main.hs

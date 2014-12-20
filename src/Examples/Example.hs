@@ -2,11 +2,15 @@
 
 module Examples.Example where
 
+import Data.Maybe
 import Data.Monoid
 import Data.Sansible
 
 import AnsibleModules.Apt
 import AnsibleModules.File
+import AnsibleModules.GetUrl
+
+import Network.URI
 
 import qualified Data.ByteString.Char8 as BS
 
@@ -19,12 +23,15 @@ main = do
       createFoo = task "Create foo dir"
                        (createDir "user" "group" "755" "/tmp/foo")
 
+      uri = fromMaybe (error "Could not parse URI") (parseAbsoluteURI "http://www.example.com/file.zip")
+      downloadExample = task "Download file" (download uri "/tmp/file.zip")
+
       playbook = Playbook
                    { pbHosts    = "localhost"
                    , pbSudo     = Just True
                    , pbTags     = mempty
                    , pbSudoUser = Nothing
-                   , pbTasks    = [install, createFoo]
+                   , pbTasks    = [install, createFoo, downloadExample]
                    }
 
   BS.putStrLn $ encode [playbook]
