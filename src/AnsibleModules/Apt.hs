@@ -5,27 +5,58 @@ import qualified Data.Aeson.TH as A
 
 import qualified Data.Text as T
 
+data AptState = Latest | Absent | Present
+$(A.deriveToJSON encodingOptions ''AptState)
+
+data AptUpgrade = Yes | Safe | Full | Dist
+$(A.deriveToJSON encodingOptions ''AptUpgrade)
+
 data Apt = Apt
-         { name           :: Maybe T.Text
-         , cacheValidTime :: Maybe Int
-         , updateCache    :: Maybe Bool
+         { name              :: Maybe T.Text
+         , state             :: Maybe AptState
+         , updateCache       :: Maybe Bool
+         , cacheValidTime    :: Maybe Int
+         , purge             :: Maybe Bool
+         , defaultRelease    :: Maybe T.Text
+         , installRecommends :: Maybe Bool
+         , force             :: Maybe Bool
+         , upgrade           :: Maybe AptUpgrade
+         , dpkgOptions       :: Maybe T.Text
+         , deb               :: Maybe FilePath
          }
+
+defaultApt :: Apt
+defaultApt = Apt
+           { name              = Nothing
+           , state             = Nothing
+           , updateCache       = Nothing
+           , cacheValidTime    = Nothing
+           , purge             = Nothing
+           , defaultRelease    = Nothing
+           , installRecommends = Nothing
+           , force             = Nothing
+           , upgrade           = Nothing
+           , dpkgOptions       = Nothing
+           , deb               = Nothing
+           }
 
 instance ModuleCall Apt where
   moduleLabel _ = "apt"
 
 $(A.deriveToJSON encodingOptions ''Apt)
 
+oneDay :: Int
+oneDay = 86400
+
 aptInstall :: T.Text -> CompiledModuleCall
-aptInstall pkg = compile $ Apt
-               { name = Just pkg
-               , cacheValidTime = Just 86400 -- 1 day
-               , updateCache = Just False
-               }
+aptInstall pkg = compile $
+  defaultApt { name           = Just pkg
+             , cacheValidTime = Just oneDay
+             , updateCache    = Just False
+             }
 
 aptUpdate :: CompiledModuleCall
-aptUpdate = compile $ Apt
-          { name = Nothing
-          , cacheValidTime = Just 86400
-          , updateCache = Just True
-          }
+aptUpdate = compile $
+  defaultApt { cacheValidTime = Just oneDay
+             , updateCache    = Just True
+             }
