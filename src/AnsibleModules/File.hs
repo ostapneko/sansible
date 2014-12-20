@@ -3,7 +3,6 @@ module AnsibleModules.File where
 import Data.Sansible
 
 import qualified Data.Text     as T
-import qualified Data.Aeson    as A
 import qualified Data.Aeson.TH as A
 
 data FileState = ChoiceFile
@@ -29,6 +28,9 @@ data File = File
           , src     :: Maybe FilePath
           , state   :: Maybe FileState
           }
+
+instance ModuleCall File where
+  moduleLabel _ = "file"
 
 defaultFile :: FilePath -> File
 defaultFile p = File
@@ -60,6 +62,3 @@ createDir u g m p = compile $ (defaultFile p)
                   }
 
 $(A.deriveToJSON encodingOptions ''File)
-
-instance ModuleCall File where
-  compile file = CompiledModuleCall "file" (A.toJSON file) Nothing

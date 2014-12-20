@@ -3,7 +3,6 @@ module AnsibleModules.GetUrl where
 import Data.Sansible
 import Network.URI
 
-import qualified Data.Aeson    as A
 import qualified Data.Aeson.TH as A
 
 import qualified Data.Text as T
@@ -23,7 +22,7 @@ data GetUrl = GetUrl
 $(A.deriveToJSON encodingOptions ''GetUrl)
 
 instance ModuleCall GetUrl where
-  compile getUrl = CompiledModuleCall "get_url" (A.toJSON getUrl) Nothing
+  moduleLabel _ = "get_url"
 
 defaultGetUrl :: URI -> FilePath -> GetUrl
 defaultGetUrl url' dest' = GetUrl

@@ -1,4 +1,6 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
+{-# LANGUAGE FlexibleInstances #-}
+
 module Data.Sansible where
 
 import Data.Maybe
@@ -28,8 +30,10 @@ data CompiledModuleCall = CompiledModuleCall
                         , moduleCallFreeForm :: Maybe T.Text
                         } deriving Show
 
-class ModuleCall m where
+class (A.ToJSON m) => ModuleCall m where
+  moduleLabel :: m -> T.Text
   compile :: m -> CompiledModuleCall
+  compile m = CompiledModuleCall (moduleLabel m) (A.toJSON m) Nothing
 
 data Task = Task
   { taskName :: T.Text
