@@ -25,6 +25,8 @@ library
                        OverloadedStrings,
                        TemplateHaskell
   exposed-modules:     Data.Sansible,
+                       Data.Sansible.Playbook,
+                       Data.Sansible.Inventory,
                        AnsibleModules.Apt,
                        AnsibleModules.File,
                        AnsibleModules.GetUrl,

@@ -1,6 +1,7 @@
 module AnsibleModules.User where
 
 import Data.Sansible hiding (User)
+import Data.Sansible.Playbook
 import qualified Data.Sansible as S
 
 import qualified Data.Aeson.TH as A

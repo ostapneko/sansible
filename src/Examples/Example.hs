@@ -4,7 +4,11 @@ module Examples.Example where
 
 import Data.Maybe
 import Data.Monoid
-import Data.Sansible
+import Data.Sansible.Inventory
+import Data.Sansible.Playbook
+
+import qualified Data.Sansible.Inventory as I
+import qualified Data.Sansible.Playbook  as P
 
 import AnsibleModules.Apt
 import AnsibleModules.File
@@ -33,5 +37,11 @@ main = do
                    , pbSudoUser = Nothing
                    , pbTasks    = [install, createFoo, downloadExample]
                    }
+      system = (simpleSystem "localhost") { ansibleSshUser = Just "vagrant" }
+      inventoryGroup = InventoryGroup (Just "local") [system]
 
-  BS.putStrLn $ encode [playbook]
+  BS.putStrLn "# Playbook"
+  BS.putStrLn $ P.encode [playbook]
+
+  BS.putStrLn "# Inventory"
+  BS.putStrLn $ I.encode [inventoryGroup]

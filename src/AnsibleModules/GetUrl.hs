@@ -1,6 +1,7 @@
 module AnsibleModules.GetUrl where
 
 import Data.Sansible
+import Data.Sansible.Playbook
 import Network.URI
 
 import qualified Data.Aeson.TH as A

@@ -1,6 +1,7 @@
 module AnsibleModules.Apt where
 
 import Data.Sansible
+import Data.Sansible.Playbook
 import qualified Data.Aeson.TH as A
 
 import qualified Data.Text as T
