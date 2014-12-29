@@ -1,12 +1,14 @@
-{-# OPTIONS_GHC -fno-warn-orphans #-}
 {-# LANGUAGE FlexibleInstances #-}
 
-module Data.Sansible where
+module Data.Sansible
+  ( module Data.Sansible
+  , module Data.Sansible.Common
+  , module Data.Sansible.Inventory
+  ) where
 
 import Data.Maybe
 import Data.Monoid
 import Data.Set
-import Data.String
 import Data.Yaml ( (.=) )
 import Data.Char
 
@@ -17,12 +19,8 @@ import qualified Data.List             as L
 import qualified Data.Text             as T
 import qualified Data.Yaml             as Y
 
-import Network.URI
-
-newtype HostPattern = HostPattern T.Text deriving (Show, Y.ToJSON, IsString)
-newtype User        = User T.Text        deriving (Show, Y.ToJSON, IsString)
-newtype Group       = Group T.Text       deriving (Show, Y.ToJSON, IsString)
-newtype Tag         = Tag T.Text         deriving (Show, Y.ToJSON, IsString, Ord, Eq)
+import Data.Sansible.Common
+import Data.Sansible.Inventory
 
 data CompiledModuleCall = CompiledModuleCall
                         { moduleName         :: T.Text
@@ -41,6 +39,16 @@ data Task = Task
   , taskTags :: [Tag]
   } deriving (Show)
 
+instance Y.ToJSON Task where
+  toJSON t =
+    let (CompiledModuleCall modName args ff) = moduleCall t
+    in  Y.object
+          [ "name"  .= taskName t
+          , "tags"  .= taskTags t
+          , modName .= fromMaybe "" ff
+          , "args"  .= args
+          ]
+
 -- ^ shortcut to create a task without tags
 task :: T.Text -> CompiledModuleCall -> Task
 task n m = Task n m []
@@ -52,16 +60,6 @@ data Playbook = Playbook
   , pbTasks     :: [Task]
   , pbTags      :: Set Tag
   } deriving (Show)
-
-instance Y.ToJSON Task where
-  toJSON t =
-    let (CompiledModuleCall modName args ff) = moduleCall t
-    in  Y.object
-          [ "name"  .= taskName t
-          , "tags"  .= taskTags t
-          , modName .= fromMaybe "" ff
-          , "args"  .= args
-          ]
 
 instance Y.ToJSON Playbook where
   toJSON p =
@@ -93,6 +91,3 @@ stripChoice :: String -> String
 stripChoice str =
   let lower = snakeCase str
   in fromMaybe lower (L.stripPrefix "choice_" lower)
-
-instance A.ToJSON URI where
-  toJSON = A.toJSON . show
