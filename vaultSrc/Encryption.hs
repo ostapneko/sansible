@@ -27,7 +27,7 @@ encryptAll passFile = do
   forM_ sourceFiles $ \ source -> do
     let relPath = fromJust $ stripPrefix (sourceDir ++ "/") source
         target  = targetDir </> relPath <.> "enc"
-        doIt    = encryptToFile pass source target
+        doIt    = createParents target >> encryptToFile pass source target
     checkFile <- doesFileExist target
     if checkFile
       then do
@@ -52,7 +52,7 @@ decryptAll passFile = do
     let relPath = fromJust $ stripPrefix (sourceDir ++ "/") source
         target  = dropExtension $ targetDir </> relPath
         failure = putStrLn ("Error while decrypting " ++ source ++ "\nAborting") >> exitFailure
-        success c = putStrLn ("Decrypted " ++ source ++ " successfully.") >> BS.writeFile target c
+        success c = createParents target >> putStrLn ("Decrypted " ++ source ++ " successfully.") >> BS.writeFile target c
     checkFile <- doesFileExist target
     if checkFile
       then do
@@ -71,6 +71,9 @@ decryptAll passFile = do
         case mClear of
           Nothing -> failure
           Just c  -> success c
+
+createParents :: FilePath -> IO ()
+createParents fp = createDirectoryIfMissing True $  takeDirectory fp
 
 getEncDir :: IO FilePath
 getEncDir = (</> "secrets") <$> getCurrentDirectory
@@ -105,7 +108,6 @@ encryptToFile :: BS.ByteString -- ^ The password
 encryptToFile pass source target = do
   decContent <- BS.readFile source
   let encContent = encrypt pass decContent
-  createTargetDirectory target
   BS.writeFile target =<< encContent
 
 decryptContent :: BS.ByteString            -- ^ The password
