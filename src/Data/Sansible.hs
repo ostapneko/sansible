@@ -31,10 +31,14 @@ instance A.ToJSON URI where
   toJSON = A.toJSON . show
 
 snakeCase :: String -> String
-snakeCase [] = []
-snakeCase (c : cs) = if isUpper c
-                     then '_' : toLower c : snakeCase cs
-                     else c : snakeCase cs
+snakeCase str =
+  let go [] = []
+      go (c : cs) =
+        if isUpper c
+          then '_' : toLower c : go cs
+          else c : go cs
+      str' = go str
+  in fromMaybe str' (L.stripPrefix "_" str')
 
 encodingOptions :: A.Options
 encodingOptions = A.defaultOptions
