@@ -28,6 +28,7 @@ library
                        Data.Sansible.Playbook,
                        Data.Sansible.Inventory,
                        AnsibleModules.Apt,
+                       AnsibleModules.Copy,
                        AnsibleModules.File,
                        AnsibleModules.GetUrl,
                        AnsibleModules.Group,
