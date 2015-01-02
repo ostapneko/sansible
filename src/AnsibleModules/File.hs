@@ -50,6 +50,20 @@ defaultFile p = File
               , state   = Nothing
               }
 
+createFile :: User
+           -> Group
+           -> T.Text -- ^ The file permission
+           -> FilePath
+           -> FilePath
+           -> CompiledModuleCall
+createFile u g m src' dest =  compile $ (defaultFile dest)
+                           { group = Just g
+                           , owner = Just u
+                           , mode  = Just m
+                           , src   = Just src'
+                           , state = Just ChoiceFile
+                           }
+
 createDir :: User
           -> Group
           -> T.Text -- ^ The file permission
