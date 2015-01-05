@@ -1,9 +1,18 @@
-module AnsibleModules.User where
+{-# LANGUAGE FlexibleInstances #-}
+module AnsibleModules.User
+  ( User(..)
+  , UserState(..)
+  , UserUpdatePassword(..)
+  , defaultUser
+  , simpleCreateUser
+  ) where
 
 import Data.Sansible hiding (User)
 import Data.Sansible.Playbook
 import qualified Data.Sansible as S
 
+import Data.Aeson ((.=))
+import qualified Data.Aeson    as A
 import qualified Data.Aeson.TH as A
 import qualified Data.Text     as T
 
@@ -19,7 +28,7 @@ data User = User
            , uid              :: Maybe Int
            , nonUnique        :: Maybe Bool
            , group            :: Maybe S.Group
-           , groups           :: Maybe T.Text
+           , groups           :: Maybe [S.Group]
            , append           :: Maybe Bool
            , shell            :: Maybe FilePath
            , home             :: Maybe FilePath
@@ -70,7 +79,37 @@ defaultUser user = User
 
 instance ModuleCall User where
   moduleLabel _ = "user"
-$(A.deriveToJSON encodingOptions ''User)
+
+instance A.ToJSON User where
+  toJSON u = args
+    where
+      gs    = maybe "" (T.intercalate "," . map fromGroup) (groups u)
+      args  = A.object $ filter ((/= A.Null) . snd)
+                                [ "name"               .= name u
+                                , "comment"            .= comment u
+                                , "uid"                .= uid u
+                                , "non_unique"         .= nonUnique u
+                                , "group"              .= group u
+                                , "groups"             .= gs
+                                , "append"             .= append u
+                                , "shell"              .= shell u
+                                , "home"               .= home u
+                                , "password"           .= password u
+                                , "state"              .= state u
+                                , "createhome"         .= createhome u
+                                , "move_home"          .= moveHome u
+                                , "system"             .= system u
+                                , "force"              .= force u
+                                , "login_class"        .= loginClass u
+                                , "remove"             .= remove u
+                                , "generate_ssh_key"   .= generateSshKey u
+                                , "ssh_key_bits"       .= sshKeyBits u
+                                , "ssh_key_type"       .= sshKeyType u
+                                , "ssh_key_file"       .= sshKeyFile u
+                                , "ssh_key_comment"    .= sshKeyComment u
+                                , "ssh_key_passphrase" .= sshKeyPassphrase u
+                                , "update_password"    .= updatePassword u
+                                ]
 
 simpleCreateUser :: S.User -> S.Group -> CompiledModuleCall
 simpleCreateUser u g = compile $ (defaultUser u) { group = Just g }

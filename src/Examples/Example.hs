@@ -4,15 +4,17 @@ module Examples.Example where
 
 import Data.Maybe
 import Data.Monoid
+import Data.Sansible
 import Data.Sansible.Inventory
 import Data.Sansible.Playbook
 
 import qualified Data.Sansible.Inventory as I
 import qualified Data.Sansible.Playbook  as P
 
-import AnsibleModules.Apt
-import AnsibleModules.File
-import AnsibleModules.GetUrl
+import qualified AnsibleModules.Apt    as MA
+import qualified AnsibleModules.File   as MF
+import qualified AnsibleModules.GetUrl as MG
+import qualified AnsibleModules.User   as MU
 
 import Network.URI
 
@@ -21,21 +23,22 @@ import qualified Data.ByteString.Char8 as BS
 main :: IO ()
 main = do
   let install   = Task "Install Haskell"
-                       (aptInstall "ghc")
+                       (MA.aptInstall "ghc")
                        ["install", "haskell"]
 
       createFoo = task "Create foo dir"
-                       (createDir "user" "group" "755" "/tmp/foo")
+                       (MF.createDir "user" "group" "755" "/tmp/foo")
 
-      uri = fromMaybe (error "Could not parse URI") (parseAbsoluteURI "http://www.example.com/file.zip")
-      downloadExample = task "Download file" (download uri "/tmp/file.zip")
+      uri             = fromMaybe (error "Could not parse URI") (parseAbsoluteURI "http://www.example.com/file.zip")
+      downloadExample = task "Download file" (MG.download uri "/tmp/file.zip")
+      createUser      = task "Create user Bar" $ compile (MU.defaultUser (User "Bar")) { MU.groups = Just [Group "bar", Group "foo"] }
 
       playbook = Playbook
                    { pbHosts    = "localhost"
                    , pbSudo     = Just True
                    , pbTags     = mempty
                    , pbSudoUser = Nothing
-                   , pbTasks    = [install, createFoo, downloadExample]
+                   , pbTasks    = [install, createFoo, downloadExample, createUser]
                    }
       system = (simpleSystem "localhost") { ansibleSshUser = Just "vagrant" }
       inventoryGroup = InventoryGroup (Just "local") [system]

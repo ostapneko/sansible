@@ -29,9 +29,11 @@ library
                        Data.Sansible.Inventory,
                        AnsibleModules.Apt,
                        AnsibleModules.Copy,
+                       AnsibleModules.Cron,
                        AnsibleModules.File,
                        AnsibleModules.GetUrl,
                        AnsibleModules.Group,
+                       AnsibleModules.Shell,
                        AnsibleModules.User
 
 executable sansible-vault
