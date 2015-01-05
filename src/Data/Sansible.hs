@@ -30,9 +30,6 @@ newtype Tag   = Tag T.Text  deriving (Show, Y.ToJSON, IsString, Ord, Eq)
 instance A.ToJSON URI where
   toJSON = A.toJSON . show
 
-instance A.ToJSON [Group] where
-  toJSON  = A.toJSON . T.intercalate "," . map fromGroup
-
 snakeCase :: String -> String
 snakeCase str =
   let go [] = []

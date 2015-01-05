@@ -34,10 +34,10 @@ defaultCopy dest' =
        , mode          = Nothing
        }
 
-copyFileAsRoot :: FilePath
-               -> T.Text
-               -> CompiledModuleCall
-copyFileAsRoot dest' c =
+copyFileAsCurrentUser :: FilePath
+                      -> T.Text
+                      -> CompiledModuleCall
+copyFileAsCurrentUser dest' c =
   compile $ (defaultCopy dest') { content = Just c }
 
 copyFile :: FilePath
