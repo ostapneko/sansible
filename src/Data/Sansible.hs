@@ -22,10 +22,10 @@ import Data.String
 
 import Network.URI
 
-newtype HostPattern = HostPattern T.Text deriving (Show, Y.ToJSON, IsString)
-newtype User  = User  { fromUser :: T.Text } deriving (Show, Y.ToJSON, IsString)
-newtype Group = Group { fromGroup :: T.Text } deriving (Show, Y.ToJSON, IsString)
-newtype Tag   = Tag T.Text  deriving (Show, Y.ToJSON, IsString, Ord, Eq)
+newtype HostPattern = HostPattern T.Text deriving (Show, Eq, Y.ToJSON, IsString)
+newtype User  = User  { fromUser :: T.Text } deriving (Show, Eq, Y.ToJSON, IsString)
+newtype Group = Group { fromGroup :: T.Text } deriving (Show, Eq, Y.ToJSON, IsString)
+newtype Tag   = Tag T.Text  deriving (Show, Eq, Y.ToJSON, IsString, Ord)
 
 instance A.ToJSON URI where
   toJSON = A.toJSON . show
