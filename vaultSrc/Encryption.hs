@@ -85,7 +85,7 @@ listAllFiles :: FilePath -> IO [FilePath]
 listAllFiles seed = do
   let go acc [] = return acc
       go acc (dir : dirs) = do
-        newItems <- (filter (not . ("." `isPrefixOf`))) <$> getDirectoryContents dir
+        newItems <- filter (\p -> p /= "." && p /= "..") <$> getDirectoryContents dir
         newDirs  <- filterM doesDirectoryExist $ map (dir </>) newItems
         newFiles <- filterM doesFileExist $ map (dir </>) newItems
         go (acc ++ newFiles) (dirs ++ newDirs)
