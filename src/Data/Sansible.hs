@@ -23,12 +23,15 @@ import Data.String
 import Network.URI
 
 newtype HostPattern = HostPattern T.Text deriving (Show, Y.ToJSON, IsString)
-newtype User        = User T.Text        deriving (Show, Y.ToJSON, IsString)
-newtype Group       = Group T.Text       deriving (Show, Y.ToJSON, IsString)
-newtype Tag         = Tag T.Text         deriving (Show, Y.ToJSON, IsString, Ord, Eq)
+newtype User  = User  { fromUser :: T.Text } deriving (Show, Y.ToJSON, IsString)
+newtype Group = Group { fromGroup :: T.Text } deriving (Show, Y.ToJSON, IsString)
+newtype Tag   = Tag T.Text  deriving (Show, Y.ToJSON, IsString, Ord, Eq)
 
 instance A.ToJSON URI where
   toJSON = A.toJSON . show
+
+instance A.ToJSON [Group] where
+  toJSON  = A.toJSON . T.intercalate "," . map fromGroup
 
 snakeCase :: String -> String
 snakeCase str =

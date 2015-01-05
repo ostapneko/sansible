@@ -34,6 +34,12 @@ defaultCopy dest' =
        , mode          = Nothing
        }
 
+copyFileAsRoot :: FilePath
+               -> T.Text
+               -> CompiledModuleCall
+copyFileAsRoot dest' c =
+  compile $ (defaultCopy dest') { content = Just c }
+
 copyFile :: FilePath
          -> FilePath
          -> User

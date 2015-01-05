@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances #-}
 module AnsibleModules.User where
 
 import Data.Sansible hiding (User)
@@ -19,7 +20,7 @@ data User = User
            , uid              :: Maybe Int
            , nonUnique        :: Maybe Bool
            , group            :: Maybe S.Group
-           , groups           :: Maybe T.Text
+           , groups           :: Maybe [S.Group]
            , append           :: Maybe Bool
            , shell            :: Maybe FilePath
            , home             :: Maybe FilePath

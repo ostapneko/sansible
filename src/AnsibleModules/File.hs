@@ -64,6 +64,13 @@ createFile u g m src' dest =  compile $ (defaultFile dest)
                            , state = Just ChoiceFile
                            }
 
+createSymlink :: FilePath
+              -> FilePath
+              -> CompiledModuleCall
+createSymlink s d = compile $ (defaultFile d) { src   = Just s
+                                              , state = Just Link
+                                              }
+
 createDir :: User
           -> Group
           -> T.Text -- ^ The file permission
