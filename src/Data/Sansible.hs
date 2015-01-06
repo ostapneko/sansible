@@ -38,7 +38,7 @@ snakeCase str =
           then '_' : toLower c : go cs
           else c : go cs
       str' = go str
-  in fromMaybe str' (L.stripPrefix "_" str')
+  in L.dropWhile (== '_') . L.dropWhileEnd (== '_') $ str'
 
 encodingOptions :: A.Options
 encodingOptions = A.defaultOptions

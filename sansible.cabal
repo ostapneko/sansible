@@ -28,6 +28,8 @@ library
                        Data.Sansible.Playbook,
                        Data.Sansible.Inventory,
                        AnsibleModules.Apt,
+                       AnsibleModules.AptKey,
+                       AnsibleModules.AptRepository,
                        AnsibleModules.Copy,
                        AnsibleModules.Cron,
                        AnsibleModules.File,
