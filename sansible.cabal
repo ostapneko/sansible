@@ -33,8 +33,10 @@ library
                        AnsibleModules.Copy,
                        AnsibleModules.Cron,
                        AnsibleModules.File,
+                       AnsibleModules.Git,
                        AnsibleModules.GetUrl,
                        AnsibleModules.Group,
+                       AnsibleModules.Service,
                        AnsibleModules.Shell,
                        AnsibleModules.User
 
