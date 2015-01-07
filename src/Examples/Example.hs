@@ -27,6 +27,7 @@ main = do
   let install   = Task "Install Haskell"
                        (MA.aptInstall "ghc")
                        ["install", "haskell"]
+                       (Just (User "johndoe"))
 
       createFoo = task "Create foo dir"
                        (MF.createDir "user" "group" "755" "/tmp/foo")

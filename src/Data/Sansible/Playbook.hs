@@ -10,6 +10,8 @@ import qualified Data.List             as L
 import qualified Data.Text             as T
 import qualified Data.Yaml             as Y
 
+import Control.Applicative ((<$>))
+
 import Data.Sansible
 
 data CompiledModuleCall = CompiledModuleCall
@@ -24,24 +26,28 @@ class (A.ToJSON m) => ModuleCall m where
   compile m = CompiledModuleCall (moduleLabel m) (A.toJSON m) Nothing
 
 data Task = Task
-  { taskName :: T.Text
-  , moduleCall :: CompiledModuleCall
-  , taskTags :: [Tag]
+  { taskName        :: T.Text
+  , moduleCall      :: CompiledModuleCall
+  , taskTags        :: [Tag]
+  , taskSudoUser    :: Maybe User
   } deriving (Show)
 
 instance Y.ToJSON Task where
   toJSON t =
     let (CompiledModuleCall modName args ff) = moduleCall t
-    in  Y.object
+        userKeys (User u)                    = ["sudo_user" .= u]
+        sudoKeys'                            = userKeys <$> taskSudoUser t
+        sudoKeys                             = fromMaybe [] sudoKeys'
+    in  Y.object $
           [ "name"  .= taskName t
           , "tags"  .= taskTags t
           , modName .= fromMaybe "" ff
           , "args"  .= args
-          ]
+          ] ++ sudoKeys
 
 -- ^ shortcut to create a task without tags
 task :: T.Text -> CompiledModuleCall -> Task
-task n m = Task n m []
+task n m = Task n m [] Nothing
 
 data Playbook = Playbook
   { pbHosts     :: HostPattern
