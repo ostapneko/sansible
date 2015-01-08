@@ -1,6 +1,8 @@
 module AnsibleModules.File where
 
 import qualified Data.Sansible as S
+
+import Data.Monoid
 import Data.Sansible.Playbook
 
 import qualified Data.Text     as T
@@ -55,6 +57,12 @@ createSymlink :: FilePath
               -> CompiledModuleCall
 createSymlink s d = compile $ (defaultFile d) { src = Just s }
 
+createSymlinkTask :: FilePath
+                  -> FilePath
+                  -> Task
+createSymlinkTask s d = task (T.pack ("symlinking " <> s <> " to " <> d))
+                             (createSymlink s d)
+
 createDir :: S.Dir
           -> CompiledModuleCall
 createDir (S.Dir p m o g) = compile $ (defaultFile p)
@@ -63,5 +71,10 @@ createDir (S.Dir p m o g) = compile $ (defaultFile p)
                           , mode  = Just m
                           , state = Just Directory
                           }
+
+createDirTask :: S.Dir
+              -> Task
+createDirTask d = task ("Creating directory " <> T.pack (S.dirPath d))
+                       (createDir d)
 
 $(A.deriveToJSON S.encodingOptions ''File)
