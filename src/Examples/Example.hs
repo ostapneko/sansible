@@ -24,13 +24,13 @@ import qualified Data.ByteString.Char8 as BS
 
 main :: IO ()
 main = do
-  let install   = Task "Install Haskell"
+  let dir      = Dir "/var/foo/bar" "777" "johndoe" "wheel"
+      install  = Task "Install Haskell"
                        (MA.aptInstall "ghc")
                        ["install", "haskell"]
                        (Just (User "johndoe"))
 
-      createFoo = task "Create foo dir"
-                       (MF.createDir "user" "group" "755" "/tmp/foo")
+      createFoo = task "Create foo dir" $ MF.createDir dir
 
       uri             = fromMaybe (error "Could not parse URI") (parseAbsoluteURI "http://www.example.com/file.zip")
       downloadExample = task "Download file" (MG.download uri "/tmp/file.zip")

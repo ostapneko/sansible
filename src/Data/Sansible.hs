@@ -2,7 +2,9 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
 module Data.Sansible
-  ( HostPattern(..)
+  ( File(..)
+  , Dir(..)
+  , HostPattern(..)
   , User(..)
   , Group(..)
   , Tag(..)
@@ -23,6 +25,21 @@ import Data.String
 import Network.URI
 
 newtype HostPattern = HostPattern T.Text deriving (Show, Eq, Y.ToJSON, IsString)
+
+data File = File
+          { filePath  :: FilePath
+          , fileMode  :: T.Text
+          , fileOwner :: User
+          , fileGroup :: Group
+          }
+
+data Dir = Dir
+         { dirPath  :: FilePath
+         , dirMode  :: T.Text
+         , dirOwner :: User
+         , dirGroup :: Group
+         }
+
 newtype User  = User  { fromUser :: T.Text } deriving (Show, Eq, Y.ToJSON, IsString)
 newtype Group = Group { fromGroup :: T.Text } deriving (Show, Eq, Y.ToJSON, IsString)
 newtype Tag   = Tag T.Text  deriving (Show, Eq, Y.ToJSON, IsString, Ord)

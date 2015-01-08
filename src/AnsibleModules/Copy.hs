@@ -1,6 +1,6 @@
 module AnsibleModules.Copy where
 
-import Data.Sansible
+import qualified Data.Sansible as S
 import Data.Sansible.Playbook
 
 import qualified Data.Text     as T
@@ -12,8 +12,8 @@ data Copy = Copy
           , dest          :: FilePath
           , directoryMode :: Maybe Bool
           , force         :: Maybe Bool
-          , group         :: Maybe Group
-          , owner         :: Maybe User
+          , group         :: Maybe S.Group
+          , owner         :: Maybe S.User
           , mode          :: Maybe T.Text
           , src           :: Maybe FilePath
           }
@@ -34,20 +34,11 @@ defaultCopy dest' =
        , mode          = Nothing
        }
 
-copyFileAsCurrentUser :: FilePath
-                      -> T.Text
-                      -> CompiledModuleCall
-copyFileAsCurrentUser dest' c =
-  compile $ (defaultCopy dest') { content = Just c }
-
 copyFile :: FilePath
-         -> FilePath
-         -> User
-         -> Group
-         -> T.Text -- ^ The File permission
+         -> S.File
          -> CompiledModuleCall
-copyFile s d o g m  =
-  compile (defaultCopy d)
+copyFile s (S.File p m o g) =
+  compile (defaultCopy p)
     { mode   = Just m
     , src    = Just s
     , group  = Just g
@@ -55,18 +46,14 @@ copyFile s d o g m  =
     }
 
 copyText :: T.Text
-         -> FilePath
-         -> User
-         -> Group
-         -> T.Text -- ^ The File permission
+         -> S.File
          -> CompiledModuleCall
-copyText c d o g m  =
-  compile (defaultCopy d)
+copyText c (S.File p m o g)  =
+  compile (defaultCopy p)
     { content = Just c
     , mode    = Just m
     , group   = Just g
     , owner   = Just o
     }
 
-
-$(A.deriveToJSON encodingOptions ''Copy)
+$(A.deriveToJSON S.encodingOptions ''Copy)

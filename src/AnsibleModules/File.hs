@@ -1,6 +1,6 @@
 module AnsibleModules.File where
 
-import Data.Sansible
+import qualified Data.Sansible as S
 import Data.Sansible.Playbook
 
 import qualified Data.Text     as T
@@ -12,14 +12,14 @@ data FileState = ChoiceFile
                | Hard
                | Touch
                | Absent
-$(A.deriveToJSON encodingOptions ''FileState)
+$(A.deriveToJSON S.encodingOptions ''FileState)
 
 data File = File
           { follow  :: Maybe Bool
           , force   :: Maybe Bool
-          , group   :: Maybe Group
+          , group   :: Maybe S.Group
           , mode    :: Maybe T.Text
-          , owner   :: Maybe User
+          , owner   :: Maybe S.User
           , path    :: FilePath
           , recurse :: Maybe Bool
           , selevel :: Maybe T.Text
@@ -50,37 +50,18 @@ defaultFile p = File
               , state   = Nothing
               }
 
-createFile :: User
-           -> Group
-           -> T.Text -- ^ The file permission
-           -> FilePath
-           -> FilePath
-           -> CompiledModuleCall
-createFile u g m src' dest =  compile $ (defaultFile dest)
-                           { group = Just g
-                           , owner = Just u
-                           , mode  = Just m
-                           , src   = Just src'
-                           , state = Just ChoiceFile
-                           }
-
 createSymlink :: FilePath
               -> FilePath
               -> CompiledModuleCall
-createSymlink s d = compile $ (defaultFile d) { src   = Just s
-                                              , state = Just Link
-                                              }
+createSymlink s d = compile $ (defaultFile d) { src = Just s }
 
-createDir :: User
-          -> Group
-          -> T.Text -- ^ The file permission
-          -> FilePath
+createDir :: S.Dir
           -> CompiledModuleCall
-createDir u g m p = compile $ (defaultFile p)
-                  { group = Just g
-                  , owner = Just u
-                  , mode  = Just m
-                  , state = Just Directory
-                  }
+createDir (S.Dir p m o g) = compile $ (defaultFile p)
+                          { group = Just g
+                          , owner = Just o
+                          , mode  = Just m
+                          , state = Just Directory
+                          }
 
-$(A.deriveToJSON encodingOptions ''File)
+$(A.deriveToJSON S.encodingOptions ''File)
