@@ -5,8 +5,10 @@ module AnsibleModules.User
   , UserUpdatePassword(..)
   , defaultUser
   , simpleCreateUser
+  , createUserTask
   ) where
 
+import Data.Monoid
 import Data.Sansible hiding (User)
 import Data.Sansible.Playbook
 import qualified Data.Sansible as S
@@ -83,8 +85,8 @@ instance ModuleCall User where
 instance A.ToJSON User where
   toJSON u = args
     where
-      gs    = maybe "" (T.intercalate "," . map fromGroup) (groups u)
-      args  = A.object $ filter ((/= A.Null) . snd)
+      gs   = maybe "" (T.intercalate "," . map fromGroup) (groups u)
+      args = A.object $ filter ((/= A.Null) . snd)
                                 [ "name"               .= name u
                                 , "comment"            .= comment u
                                 , "uid"                .= uid u
@@ -113,3 +115,8 @@ instance A.ToJSON User where
 
 simpleCreateUser :: S.User -> S.Group -> CompiledModuleCall
 simpleCreateUser u g = compile $ (defaultUser u) { group = Just g }
+
+createUserTask :: S.User -> S.Group -> Task
+createUserTask u g =
+  task ("create user " <> fromUser u)
+       (simpleCreateUser u g)

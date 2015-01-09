@@ -1,5 +1,6 @@
 module AnsibleModules.Git where
 
+import Data.Monoid
 import Data.Sansible
 import Data.Sansible.Playbook
 import Network.URI
@@ -51,3 +52,8 @@ defaultGit r d = Git
 
 simpleGit :: URI -> FilePath -> CompiledModuleCall
 simpleGit r d = compile $ defaultGit r d
+
+gitTask :: URI -> FilePath -> Task
+gitTask r d =
+  let label = T.pack $ "Cloning git repo " <> show r <> " into " <> d
+  in  task label $ simpleGit r d

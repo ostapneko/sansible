@@ -1,9 +1,10 @@
 module AnsibleModules.Apt where
 
+import Data.Monoid
 import Data.Sansible
 import Data.Sansible.Playbook
-import qualified Data.Aeson.TH as A
 
+import qualified Data.Aeson.TH as A
 import qualified Data.Text as T
 
 data AptState = Latest | Absent | Present
@@ -57,6 +58,10 @@ aptInstall pkg = compile $
              , updateCache    = Just False
              }
 
+aptInstallTask :: T.Text -> Task
+aptInstallTask p =
+  task ("Install apt package " <> p) (aptInstall p)
+
 -- | Update apt
 aptUpdate :: CompiledModuleCall
 aptUpdate = compile $
@@ -64,7 +69,15 @@ aptUpdate = compile $
              , updateCache    = Just True
              }
 
+aptUpdateTask :: Task
+aptUpdateTask =
+  task ("Run apt-get update") aptUpdate
+
 -- | Install a Debian package from file
 aptDebInstall :: FilePath -> CompiledModuleCall
 aptDebInstall path = compile $
   defaultApt { deb = Just path }
+
+aptDebInstallTask :: FilePath -> Task
+aptDebInstallTask p =
+  task ("Install deb package " <> T.pack p) (aptDebInstall p)

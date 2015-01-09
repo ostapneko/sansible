@@ -1,5 +1,6 @@
 module AnsibleModules.Service where
 
+import Data.Monoid
 import Data.Sansible
 import Data.Sansible.Playbook
 
@@ -37,3 +38,9 @@ defaultService n s = Service
 
 simpleService :: T.Text -> ServiceState -> CompiledModuleCall
 simpleService n s = compile $ defaultService n s
+
+
+serviceTask :: T.Text -> ServiceState -> Task
+serviceTask n s =
+  task ("Starting service" <> n)
+       (simpleService n s)

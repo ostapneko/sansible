@@ -1,5 +1,6 @@
 module AnsibleModules.AptRepository where
 
+import Data.Monoid
 import Data.Sansible
 import Data.Sansible.Playbook
 import qualified Data.Aeson.TH as A
@@ -31,3 +32,8 @@ defaultAptRepository r = AptRepository
 
 addAptRepo :: T.Text -> CompiledModuleCall
 addAptRepo r = compile $ (defaultAptRepository r) { state = Just Present }
+
+addAptRepoTask :: T.Text -> Task
+addAptRepoTask r =
+  task ("Adding apt-repo " <> r)
+       (addAptRepo r)
