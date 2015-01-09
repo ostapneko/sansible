@@ -58,20 +58,20 @@ instance A.ToJSON PostgresqlUser where
     where
       filterNull = filter ((/= A.Null) . snd)
       flags      = fmap (intercalate "," . map encodeFlag) (roleAttrFlags u)
-      args       = A.object $ filterNull $ [ "db"              .= db u
-                                           , "encrypted"       .= encrypted u
-                                           , "expires"         .= expires u
-                                           , "failOnUser"      .= failOnUser u
-                                           , "loginHost"       .= loginHost u
-                                           , "loginPassword"   .= loginPassword u
-                                           , "loginUnixSocket" .= loginUnixSocket u
-                                           , "loginUser"       .= loginUser u
-                                           , "name"            .= name u
-                                           , "password"        .= password u
-                                           , "port"            .= port u
-                                           , "priv"            .= priv u
-                                           , "roleAttrFlags"   .= flags
-                                           , "state"           .= state u
+      args       = A.object $ filterNull $ [ "db"                .= db u
+                                           , "encrypted"         .= encrypted u
+                                           , "expires"           .= expires u
+                                           , "fail_on_user"      .= failOnUser u
+                                           , "login_host"        .= loginHost u
+                                           , "login_password"    .= loginPassword u
+                                           , "login_unix_socket" .= loginUnixSocket u
+                                           , "login_user"        .= loginUser u
+                                           , "name"              .= name u
+                                           , "password"          .= password u
+                                           , "port"              .= port u
+                                           , "priv"              .= priv u
+                                           , "role_attr_flags"   .= flags
+                                           , "state"             .= state u
                                            ]
 
 defaultPostgresqlUser :: T.Text -> PostgresqlUser
