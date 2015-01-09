@@ -1,5 +1,6 @@
 module AnsibleModules.Shell where
 
+import Data.Monoid
 import Data.Sansible
 import Data.Sansible.Playbook
 
@@ -33,3 +34,8 @@ simpleShell cmd mCreates =
     mc { moduleCallFreeForm = Just cmd }
   where
     mc = compile $ defaultShell { creates = mCreates }
+
+shellTask :: T.Text -> Maybe FilePath -> Task
+shellTask cmd mCreates =
+  task ("running shell command " <> cmd)
+       (simpleShell cmd mCreates)

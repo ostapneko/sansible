@@ -1,5 +1,6 @@
 module AnsibleModules.GetUrl where
 
+import Data.Monoid
 import Data.Sansible
 import Data.Sansible.Playbook
 import Network.URI
@@ -40,3 +41,9 @@ defaultGetUrl url' dest' = GetUrl
 
 download :: URI -> FilePath -> CompiledModuleCall
 download url' dest' = compile $ defaultGetUrl url' dest'
+
+downloadTask :: URI -> FilePath -> Task
+downloadTask u d =
+  task ("downloading " <> T.pack (show u))
+       (download u d)
+

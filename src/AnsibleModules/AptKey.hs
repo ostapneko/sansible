@@ -1,6 +1,8 @@
 module AnsibleModules.AptKey where
 
 import Network.URI
+
+import Data.Monoid
 import Data.Maybe
 import Data.Sansible
 import Data.Sansible.Playbook
@@ -43,3 +45,7 @@ unsafeFromUrl urlStr =
   in compile $ defaultAptKey { url   = Just u
                              , state = Just Present
                              }
+
+unsafeFromUrlTask :: String -> Task
+unsafeFromUrlTask u =
+  task ("Add apt-key: " <> T.pack u) (unsafeFromUrl u)
