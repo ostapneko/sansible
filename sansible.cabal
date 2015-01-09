@@ -36,6 +36,7 @@ library
                        AnsibleModules.Git,
                        AnsibleModules.GetUrl,
                        AnsibleModules.Group,
+                       AnsibleModules.PostgresqlUser,
                        AnsibleModules.PostgresqlDB,
                        AnsibleModules.Service,
                        AnsibleModules.Shell,
