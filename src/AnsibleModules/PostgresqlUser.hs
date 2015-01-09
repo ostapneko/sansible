@@ -33,7 +33,7 @@ encodeFlag = show'
     show' (Replication b) = prefix b <> "REPLICATION"
     prefix b             = if b then "" else "NO"
 
-data PostgresUser = PostgresUser
+data PostgresqlUser = PostgresqlUser
                   { db              :: Maybe T.Text
                   , encrypted       :: Maybe Bool
                   , expires         :: Maybe Bool
@@ -50,10 +50,10 @@ data PostgresUser = PostgresUser
                   , state           :: Maybe State
                   }
 
-instance ModuleCall PostgresUser where
-  moduleLabel _ = "postgres_user"
+instance ModuleCall PostgresqlUser where
+  moduleLabel _ = "postgresql_user"
 
-instance A.ToJSON PostgresUser where
+instance A.ToJSON PostgresqlUser where
   toJSON u = args
     where
       filterNull = filter ((/= A.Null) . snd)
@@ -74,8 +74,8 @@ instance A.ToJSON PostgresUser where
                                            , "state"           .= state u
                                            ]
 
-defaultPostgresUser :: T.Text -> PostgresUser
-defaultPostgresUser n = PostgresUser
+defaultPostgresqlUser :: T.Text -> PostgresqlUser
+defaultPostgresqlUser n = PostgresqlUser
                           { db              = Nothing
                           , encrypted       = Nothing
                           , expires         = Nothing
@@ -92,11 +92,11 @@ defaultPostgresUser n = PostgresUser
                           , state           = Nothing
                           }
 
-postgresUser :: T.Text -> CompiledModuleCall
-postgresUser = compile . defaultPostgresUser
+postgresqlUser :: T.Text -> CompiledModuleCall
+postgresqlUser = compile . defaultPostgresqlUser
 
-postgresUserTask :: T.Text -> Task
-postgresUserTask u =
+postgresqlUserTask :: T.Text -> Task
+postgresqlUserTask u =
   let label = "Creating postgres user " <> u
-  in  task label (postgresUser u)
+  in  task label (postgresqlUser u)
 
