@@ -28,9 +28,12 @@ class (A.ToJSON m) => ModuleCall m where
 data Task = Task
   { taskName        :: T.Text
   , moduleCall      :: CompiledModuleCall
-  , taskTags        :: [Tag]
+  , taskTags        :: Set Tag
   , taskSudoUser    :: Maybe User
   } deriving (Show)
+
+tag :: Tag -> Task -> Task
+tag t tsk = tsk { taskTags = insert t (taskTags tsk)}
 
 instance Y.ToJSON Task where
   toJSON t =
@@ -47,7 +50,7 @@ instance Y.ToJSON Task where
 
 -- ^ shortcut to create a task without tags
 task :: T.Text -> CompiledModuleCall -> Task
-task n m = Task n m [] Nothing
+task n m = Task n m mempty Nothing
 
 data Playbook = Playbook
   { pbHosts     :: HostPattern
