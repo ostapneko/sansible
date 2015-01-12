@@ -55,7 +55,9 @@ defaultFile p = File
 createSymlink :: FilePath
               -> FilePath
               -> CompiledModuleCall
-createSymlink s d = compile $ (defaultFile d) { src = Just s }
+createSymlink s d = compile $ (defaultFile d) { src   = Just s
+                                              , state = Just Link
+                                              }
 
 createSymlinkTask :: FilePath
                   -> FilePath
