@@ -8,13 +8,13 @@ import Data.Sansible.Playbook
 import qualified Data.Text     as T
 import qualified Data.Aeson.TH as A
 
-data FileState = ChoiceFile
-               | Link
-               | Directory
-               | Hard
-               | Touch
-               | Absent
-$(A.deriveToJSON S.encodingOptions ''FileState)
+data State = ChoiceFile
+           | Link
+           | Directory
+           | Hard
+           | Touch
+           | Absent
+$(A.deriveToJSON S.encodingOptions ''State)
 
 data File = File
           { follow  :: Maybe Bool
@@ -29,7 +29,7 @@ data File = File
           , setype  :: Maybe T.Text
           , seuser  :: Maybe T.Text
           , src     :: Maybe FilePath
-          , state   :: Maybe FileState
+          , state   :: Maybe State
           }
 
 instance ModuleCall File where

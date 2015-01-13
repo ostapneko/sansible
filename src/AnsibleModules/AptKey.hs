@@ -9,8 +9,8 @@ import Data.Sansible.Playbook
 import qualified Data.Aeson.TH as A
 import qualified Data.Text as T
 
-data AptKeyState = Present | Absent
-$(A.deriveToJSON encodingOptions ''AptKeyState)
+data State = Present | Absent
+$(A.deriveToJSON encodingOptions ''State)
 
 data AptKey = AptKey
             { id_           :: Maybe T.Text
@@ -19,7 +19,7 @@ data AptKey = AptKey
             , keyring       :: Maybe FilePath
             , url           :: Maybe URI
             , keyserver     :: Maybe T.Text
-            , state         :: Maybe AptKeyState
+            , state         :: Maybe State
             , validateCerts :: Maybe Bool
             }
 $(A.deriveToJSON encodingOptions ''AptKey)

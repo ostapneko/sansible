@@ -6,8 +6,8 @@ import Data.Sansible.Playbook
 import qualified Data.Text as T
 import qualified Data.Aeson.TH as A
 
-data CronState = Present | Absent deriving (Show, Eq)
-$(A.deriveToJSON encodingOptions ''CronState)
+data State = Present | Absent deriving (Show, Eq)
+$(A.deriveToJSON encodingOptions ''State)
 
 data SpecialTime
     = Reboot
@@ -30,7 +30,7 @@ data Cron = Cron
           , minute     :: Maybe T.Text
           , month      :: Maybe T.Text
           , speciaTime :: Maybe SpecialTime
-          , state      :: Maybe CronState
+          , state      :: Maybe State
           , user       :: Maybe User
           , weekDay    :: Maybe T.Text
           }

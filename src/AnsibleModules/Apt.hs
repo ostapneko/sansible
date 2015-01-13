@@ -7,22 +7,22 @@ import Data.Sansible.Playbook
 import qualified Data.Aeson.TH as A
 import qualified Data.Text as T
 
-data AptState = Latest | Absent | Present
-$(A.deriveToJSON encodingOptions ''AptState)
+data State = Latest | Absent | Present
+$(A.deriveToJSON encodingOptions ''State)
 
-data AptUpgrade = Yes | Safe | Full | Dist
-$(A.deriveToJSON encodingOptions ''AptUpgrade)
+data Upgrade = Yes | Safe | Full | Dist
+$(A.deriveToJSON encodingOptions ''Upgrade)
 
 data Apt = Apt
          { name              :: Maybe T.Text
-         , state             :: Maybe AptState
+         , state             :: Maybe State
          , updateCache       :: Maybe Bool
          , cacheValidTime    :: Maybe Int
          , purge             :: Maybe Bool
          , defaultRelease    :: Maybe T.Text
          , installRecommends :: Maybe Bool
          , force             :: Maybe Bool
-         , upgrade           :: Maybe AptUpgrade
+         , upgrade           :: Maybe Upgrade
          , dpkgOptions       :: Maybe T.Text
          , deb               :: Maybe FilePath
          }

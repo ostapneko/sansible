@@ -1,8 +1,8 @@
 {-# LANGUAGE FlexibleInstances #-}
 module AnsibleModules.User
   ( User(..)
-  , UserState(..)
-  , UserUpdatePassword(..)
+  , State(..)
+  , UpdatePassword(..)
   , defaultUser
   , simpleCreateUser
   , createUserTask
@@ -18,11 +18,11 @@ import qualified Data.Aeson    as A
 import qualified Data.Aeson.TH as A
 import qualified Data.Text     as T
 
-data UserState = Present | Absent
-$(A.deriveToJSON encodingOptions ''UserState)
+data State = Present | Absent
+$(A.deriveToJSON encodingOptions ''State)
 
-data UserUpdatePassword = Always | OnCreate
-$(A.deriveToJSON encodingOptions ''UserUpdatePassword)
+data UpdatePassword = Always | OnCreate
+$(A.deriveToJSON encodingOptions ''UpdatePassword)
 
 data User = User
            { name             :: S.User
@@ -35,7 +35,7 @@ data User = User
            , shell            :: Maybe FilePath
            , home             :: Maybe FilePath
            , password         :: Maybe T.Text
-           , state            :: Maybe UserState
+           , state            :: Maybe State
            , createhome       :: Maybe Bool
            , moveHome         :: Maybe Bool
            , system           :: Maybe Bool
@@ -48,7 +48,7 @@ data User = User
            , sshKeyFile       :: Maybe FilePath
            , sshKeyComment    :: Maybe T.Text
            , sshKeyPassphrase :: Maybe T.Text
-           , updatePassword   :: Maybe UserUpdatePassword
+           , updatePassword   :: Maybe UpdatePassword
            }
 
 defaultUser :: S.User -> User

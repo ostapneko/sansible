@@ -6,12 +6,12 @@ import Data.Sansible.Playbook
 import qualified Data.Aeson.TH as A
 import qualified Data.Text as T
 
-data AptRepositoryState = Present | Absent
-$(A.deriveToJSON encodingOptions ''AptRepositoryState)
+data State = Present | Absent
+$(A.deriveToJSON encodingOptions ''State)
 
 data AptRepository = AptRepository
             { repo          :: T.Text
-            , state         :: Maybe AptRepositoryState
+            , state         :: Maybe State
             , mode          :: Maybe T.Text
             , updateCache   :: Maybe Bool
             , validateCerts :: Maybe Bool

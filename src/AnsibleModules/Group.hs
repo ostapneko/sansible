@@ -7,13 +7,13 @@ import qualified Data.Sansible as S
 
 import qualified Data.Aeson.TH as A
 
-data GroupState = Present | Absent
-$(A.deriveToJSON encodingOptions ''GroupState)
+data State = Present | Absent
+$(A.deriveToJSON encodingOptions ''State)
 
 data Group = Group
            { name   :: S.Group
            , gid    :: Maybe Int
-           , state  :: Maybe GroupState
+           , state  :: Maybe State
            , system :: Maybe Bool
            }
 

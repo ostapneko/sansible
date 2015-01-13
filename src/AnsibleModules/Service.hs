@@ -8,8 +8,8 @@ import qualified Data.Aeson.TH as A
 import qualified Data.Text     as T
 
 
-data ServiceState = Started | Stopped | Restarted | Reloaded
-$(A.deriveToJSON encodingOptions ''ServiceState)
+data State = Started | Stopped | Restarted | Reloaded
+$(A.deriveToJSON encodingOptions ''State)
 
 data Service = Service
              { arguments :: Maybe T.Text
@@ -18,14 +18,14 @@ data Service = Service
              , pattern   :: Maybe T.Text
              , runLevel  :: Maybe T.Text
              , sleep     :: Maybe Bool
-             , state     :: Maybe ServiceState
+             , state     :: Maybe State
              }
 $(A.deriveToJSON encodingOptions ''Service)
 
 instance ModuleCall Service where
   moduleLabel _ = "service"
 
-defaultService :: T.Text -> ServiceState -> Service
+defaultService :: T.Text -> State -> Service
 defaultService n s = Service
                    { arguments = Nothing
                    , enabled   = Nothing
@@ -36,11 +36,11 @@ defaultService n s = Service
                    , state     = Just s
                    }
 
-simpleService :: T.Text -> ServiceState -> CompiledModuleCall
+simpleService :: T.Text -> State -> CompiledModuleCall
 simpleService n s = compile $ defaultService n s
 
 
-serviceTask :: T.Text -> ServiceState -> Task
+serviceTask :: T.Text -> State -> Task
 serviceTask n s =
   task ("Starting service" <> n)
        (simpleService n s)
