@@ -52,6 +52,9 @@ instance Y.ToJSON Task where
 task :: T.Text -> CompiledModuleCall -> Task
 task n m = Task n m mempty Nothing
 
+as :: User -> Task -> Task
+as u t = t { taskSudoUser = Just u }
+
 data Playbook = Playbook
   { pbHosts     :: HostPattern
   , pbSudo      :: Maybe Bool
