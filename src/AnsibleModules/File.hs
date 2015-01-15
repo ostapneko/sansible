@@ -79,4 +79,8 @@ createDirTask :: S.Dir
 createDirTask d = task ("Creating directory " <> T.pack (S.dirPath d))
                        (createDir d)
 
+deleteFileTask :: FilePath -> Task
+deleteFileTask p = task ("deleting file " <> T.pack p)
+                        (compile $ (defaultFile p) { state = Just Absent})
+
 $(A.deriveToJSON S.encodingOptions ''File)
