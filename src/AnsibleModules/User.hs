@@ -115,10 +115,10 @@ instance A.ToJSON User where
                                 , "update_password"    .= updatePassword u
                                 ]
 
-simpleCreateUser :: S.User -> S.Group -> CompiledModuleCall
+simpleCreateUser :: S.User -> Group -> CompiledModuleCall
 simpleCreateUser u g = compile $ (defaultUser u) { group = Just g }
 
-userGroupsTask :: S.User -> Group -> Set S.Group -> Task
+userGroupsTask :: S.User -> Group -> Set Group -> Task
 userGroupsTask u g gs =
   let gs' = T.intercalate "," $ map fromGroup $ toList gs
   in  task ("create user " <> fromUser u <> " and add it to groups " <> gs')
@@ -127,7 +127,7 @@ userGroupsTask u g gs =
                                       , group  = Just g
                                       })
 
-createUserTask :: S.User -> S.Group -> Task
+createUserTask :: S.User -> Group -> Task
 createUserTask u g =
   task ("create user " <> fromUser u)
        (simpleCreateUser u g)
