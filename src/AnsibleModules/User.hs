@@ -6,8 +6,10 @@ module AnsibleModules.User
   , defaultUser
   , simpleCreateUser
   , createUserTask
+  , userGroupsTask
   ) where
 
+import Data.Set (toList, Set)
 import Data.Monoid
 import Data.Sansible hiding (User)
 import Data.Sansible.Playbook
@@ -30,7 +32,7 @@ data User = User
            , uid              :: Maybe Int
            , nonUnique        :: Maybe Bool
            , group            :: Maybe S.Group
-           , groups           :: Maybe [S.Group]
+           , groups           :: Maybe (Set S.Group)
            , append           :: Maybe Bool
            , shell            :: Maybe FilePath
            , home             :: Maybe FilePath
@@ -85,7 +87,7 @@ instance ModuleCall User where
 instance A.ToJSON User where
   toJSON u = args
     where
-      gs   = maybe "" (T.intercalate "," . map fromGroup) (groups u)
+      gs   = maybe "" (T.intercalate "," . map fromGroup . toList) (groups u)
       args = A.object $ filter ((/= A.Null) . snd)
                                 [ "name"               .= name u
                                 , "comment"            .= comment u
@@ -115,6 +117,15 @@ instance A.ToJSON User where
 
 simpleCreateUser :: S.User -> S.Group -> CompiledModuleCall
 simpleCreateUser u g = compile $ (defaultUser u) { group = Just g }
+
+userGroupsTask :: S.User -> Group -> Set S.Group -> Task
+userGroupsTask u g gs =
+  let gs' = T.intercalate "," $ map fromGroup $ toList gs
+  in  task ("create user " <> fromUser u <> " and add it to groups " <> gs')
+           (compile $ (defaultUser u) { append = Just True
+                                      , groups = Just gs
+                                      , group  = Just g
+                                      })
 
 createUserTask :: S.User -> S.Group -> Task
 createUserTask u g =

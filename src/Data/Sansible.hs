@@ -40,8 +40,8 @@ data Dir = Dir
          , dirGroup :: Group
          }
 
-newtype User  = User  { fromUser :: T.Text } deriving (Show, Eq, Y.ToJSON, IsString)
-newtype Group = Group { fromGroup :: T.Text } deriving (Show, Eq, Y.ToJSON, IsString)
+newtype User  = User  { fromUser :: T.Text } deriving (Show, Eq, Ord, Y.ToJSON, IsString)
+newtype Group = Group { fromGroup :: T.Text } deriving (Show, Eq, Ord, Y.ToJSON, IsString)
 newtype Tag   = Tag T.Text  deriving (Show, Eq, Y.ToJSON, IsString, Ord)
 
 instance A.ToJSON URI where

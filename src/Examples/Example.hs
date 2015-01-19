@@ -7,7 +7,7 @@ import Data.Monoid
 import Data.Sansible
 import Data.Sansible.Inventory
 import Data.Sansible.Playbook
-import Data.Set
+import qualified Data.Set                as S
 
 import qualified Data.Sansible.Inventory as I
 import qualified Data.Sansible.Playbook  as P
@@ -28,14 +28,14 @@ main = do
   let dir      = Dir "/var/foo/bar" "777" "johndoe" "wheel"
       install  = Task "Install Haskell"
                        (MA.aptInstall "ghc")
-                       (fromList ["install", "haskell"])
+                       (S.fromList ["install", "haskell"])
                        (Just (User "johndoe"))
 
       createFoo = task "Create foo dir" $ MF.createDir dir
 
       uri             = fromMaybe (error "Could not parse URI") (parseAbsoluteURI "http://www.example.com/file.zip")
       downloadExample = task "Download file" (MG.download uri "/tmp/file.zip")
-      createUser      = task "Create user Bar" $ compile (MU.defaultUser (User "Bar")) { MU.groups = Just [Group "bar", Group "foo"] }
+      createUser      = task "Create user Bar" $ compile (MU.defaultUser (User "Bar")) { MU.groups = Just (S.fromList [Group "bar", Group "foo"]) }
       startService    = tag "service" $ task "Start service foo" $ MS.simpleService "foo" MS.Started
       cloneRepo       = task "Clone example repo " $ MG.simpleGit (fromJust . parseURI $ "https://github.com/afiore/jenkins-tty.git" ) "/path/to/repo"
 
