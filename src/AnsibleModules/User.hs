@@ -13,6 +13,7 @@ import Data.Set (toList, Set)
 import Data.Monoid
 import Data.Sansible hiding (User)
 import Data.Sansible.Playbook
+import Control.Applicative
 import qualified Data.Sansible as S
 
 import Data.Aeson ((.=))
@@ -87,7 +88,7 @@ instance ModuleCall User where
 instance A.ToJSON User where
   toJSON u = args
     where
-      gs   = maybe "" (T.intercalate "," . map fromGroup . toList) (groups u)
+      gs   = (T.intercalate "," . map fromGroup . toList) <$> groups u
       args = A.object $ filter ((/= A.Null) . snd)
                                 [ "name"               .= name u
                                 , "comment"            .= comment u

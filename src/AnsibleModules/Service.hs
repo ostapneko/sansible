@@ -39,7 +39,6 @@ defaultService n s = Service
 simpleService :: T.Text -> State -> CompiledModuleCall
 simpleService n s = compile $ defaultService n s
 
-
 serviceTask :: T.Text -> State -> Task
 serviceTask n s =
   task ("Starting service" <> n)
