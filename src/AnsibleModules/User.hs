@@ -122,9 +122,10 @@ simpleCreateUser u g = compile $ (defaultUser u) { group = Just g }
 userGroupsTask :: S.User -> Group -> Set Group -> Task
 userGroupsTask u g gs =
   let gs' = T.intercalate "," $ map fromGroup $ toList gs
+      mGs = if (null . toList $ gs) then Nothing else Just gs
   in  task ("create user " <> fromUser u <> " and add it to groups " <> gs')
            (compile $ (defaultUser u) { append = Just True
-                                      , groups = Just gs
+                                      , groups = mGs
                                       , group  = Just g
                                       })
 
