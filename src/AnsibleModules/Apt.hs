@@ -71,7 +71,13 @@ aptUpdate = compile $
 
 aptUpdateTask :: Task
 aptUpdateTask =
-  task ("Run apt-get update") aptUpdate
+  task "Run apt-get update" aptUpdate
+
+forceAptUpdateTask :: Task
+forceAptUpdateTask =
+  task "Run apt-get update" $ compile $ defaultApt { cacheValidTime = Nothing
+                                                   , updateCache    = Just True
+                                                   }
 
 -- | Install a Debian package from file
 aptDebInstall :: FilePath -> CompiledModuleCall
