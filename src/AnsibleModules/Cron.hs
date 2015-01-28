@@ -62,8 +62,9 @@ nightlyCron :: User
                 -> CompiledModuleCall
 nightlyCron u n j =
   compile $ (defaultCron n)
-            { name = n
-            , user = Just u
-            , job  = Just j
-            , hour = Just "0"
+            { name   = n
+            , user   = Just u
+            , job    = Just j
+            , hour   = Just "0"
+            , minute = Just "0"
             }
