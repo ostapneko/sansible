@@ -37,6 +37,7 @@ library
                        AnsibleModules.GetUrl,
                        AnsibleModules.Group,
                        AnsibleModules.Lineinfile,
+                       AnsibleModules.Pip,
                        AnsibleModules.PostgresqlUser,
                        AnsibleModules.PostgresqlDB,
                        AnsibleModules.Service,
