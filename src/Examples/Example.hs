@@ -30,6 +30,8 @@ main = do
                        (MA.aptInstall "ghc")
                        (S.fromList ["install", "haskell"])
                        (Just (User "johndoe"))
+                       (Just 5)
+                       Nothing
 
       createFoo = task "Create foo dir" $ MF.createDir dir
 

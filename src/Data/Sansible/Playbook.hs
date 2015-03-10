@@ -30,6 +30,8 @@ data Task = Task
   , moduleCall      :: CompiledModuleCall
   , taskTags        :: Set Tag
   , taskSudoUser    :: Maybe User
+  , taskAsync           :: Maybe Int
+  , taskPoll            :: Maybe Int
   } deriving (Show)
 
 tag :: Tag -> Task -> Task
@@ -41,16 +43,26 @@ instance Y.ToJSON Task where
         userKeys (User u)                    = ["sudo_user" .= u]
         sudoKeys'                            = userKeys <$> taskSudoUser t
         sudoKeys                             = fromMaybe [] sudoKeys'
-    in  Y.object $
+    in  Y.object $ L.filter ((/= Y.Null) . snd)
           [ "name"  .= taskName t
           , "tags"  .= taskTags t
           , modName .= fromMaybe "" ff
           , "args"  .= args
+          , "async" .= taskAsync t
+          , "poll"  .= taskPoll t
           ] ++ sudoKeys
 
 -- ^ shortcut to create a task without tags
 task :: T.Text -> CompiledModuleCall -> Task
-task n m = Task n m mempty Nothing
+task n m =
+  Task
+    { taskName     = n
+    , moduleCall   = m
+    , taskTags     = mempty
+    , taskSudoUser = Nothing
+    , taskAsync    = Nothing
+    , taskPoll     = Nothing
+    }
 
 as :: User -> Task -> Task
 as u t = t { taskSudoUser = Just u }
