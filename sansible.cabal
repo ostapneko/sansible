@@ -42,7 +42,8 @@ library
                        AnsibleModules.PostgresqlDB,
                        AnsibleModules.Service,
                        AnsibleModules.Shell,
-                       AnsibleModules.User
+                       AnsibleModules.User,
+                       AnsibleModules.WaitFor
 
 executable sansible-vault
   main-is:             Main.hs

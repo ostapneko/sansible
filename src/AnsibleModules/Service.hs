@@ -4,9 +4,8 @@ import Data.Monoid
 import Data.Sansible
 import Data.Sansible.Playbook
 
-import qualified Data.Aeson.TH as A
-import qualified Data.Text     as T
-
+import qualified Data.Aeson.TH          as A
+import qualified Data.Text              as T
 
 data State = Started | Stopped | Restarted | Reloaded
 $(A.deriveToJSON encodingOptions ''State)
@@ -20,6 +19,7 @@ data Service = Service
              , sleep     :: Maybe Bool
              , state     :: Maybe State
              }
+
 $(A.deriveToJSON encodingOptions ''Service)
 
 instance ModuleCall Service where
@@ -41,5 +41,10 @@ simpleService n s = compile $ defaultService n s
 
 serviceTask :: T.Text -> State -> Task
 serviceTask n s =
-  task ("Starting service" <> n)
-       (simpleService n s)
+  let s' = case s of
+                Started   -> "started"
+                Stopped   -> "stopped"
+                Restarted -> "restarted"
+                Reloaded  -> "reloaded"
+  in  task ("running service" <> n <> "[" <> s' <> "]")
+        (simpleService n s)

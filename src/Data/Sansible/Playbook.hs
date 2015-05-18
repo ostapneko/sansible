@@ -30,8 +30,9 @@ data Task = Task
   , moduleCall      :: CompiledModuleCall
   , taskTags        :: Set Tag
   , taskSudoUser    :: Maybe User
-  , taskAsync           :: Maybe Int
-  , taskPoll            :: Maybe Int
+  , taskAsync       :: Maybe Int
+  , taskPoll        :: Maybe Int
+  , taskDelegateTo  :: Maybe T.Text
   } deriving (Show)
 
 tag :: Tag -> Task -> Task
@@ -44,24 +45,26 @@ instance Y.ToJSON Task where
         sudoKeys'                            = userKeys <$> taskSudoUser t
         sudoKeys                             = fromMaybe [] sudoKeys'
     in  Y.object $ L.filter ((/= Y.Null) . snd)
-          [ "name"  .= taskName t
-          , "tags"  .= taskTags t
-          , modName .= fromMaybe "" ff
-          , "args"  .= args
-          , "async" .= taskAsync t
-          , "poll"  .= taskPoll t
+          [ "name"        .= taskName t
+          , "tags"        .= taskTags t
+          , modName       .= fromMaybe "" ff
+          , "args"        .= args
+          , "async"       .= taskAsync t
+          , "poll"        .= taskPoll t
+          , "delegate_to" .= taskDelegateTo t
           ] ++ sudoKeys
 
 -- ^ shortcut to create a task without tags
 task :: T.Text -> CompiledModuleCall -> Task
 task n m =
   Task
-    { taskName     = n
-    , moduleCall   = m
-    , taskTags     = mempty
-    , taskSudoUser = Nothing
-    , taskAsync    = Nothing
-    , taskPoll     = Nothing
+    { taskName       = n
+    , moduleCall     = m
+    , taskTags       = mempty
+    , taskSudoUser   = Nothing
+    , taskAsync      = Nothing
+    , taskPoll       = Nothing
+    , taskDelegateTo = Nothing
     }
 
 as :: User -> Task -> Task
@@ -73,6 +76,7 @@ data Playbook = Playbook
   , pbSudoUser  :: Maybe User
   , pbTasks     :: [Task]
   , pbTags      :: Set Tag
+  , pbSerial    :: Maybe T.Text
   } deriving (Show)
 
 instance Y.ToJSON Playbook where
@@ -83,6 +87,7 @@ instance Y.ToJSON Playbook where
       , "tasks"     .= pbTasks p
       , "sudo"      .= pbSudo p
       , "sudo_user" .= pbSudoUser p
+      , "serial"    .= pbSerial p
       ]
 
 encode :: [Playbook] -> BS.ByteString
