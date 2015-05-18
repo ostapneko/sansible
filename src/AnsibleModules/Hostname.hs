@@ -1,15 +1,16 @@
 module AnsibleModules.Hostname
  ( Hostname(..)
- , simpleHostname
+ , defaultHostname
  , hostnameTask
  ) where
 
 import qualified Data.Text as T
+
 import Data.Monoid
-import Data.Sansible
 import Data.Sansible.Playbook
 
-import qualified Data.Aeson.TH          as A
+import qualified Data.Sansible as S
+import qualified Data.Aeson.TH as A
 
 data Hostname = Hostname { name :: T.Text }
 $(A.deriveToJSON S.encodingOptions ''Hostname)
@@ -17,7 +18,8 @@ $(A.deriveToJSON S.encodingOptions ''Hostname)
 instance ModuleCall Hostname where
   moduleLabel _ = "hostname"
 
-defaultHostname :: T.Text = Hostname
+defaultHostname :: T.Text -> Hostname
+defaultHostname = Hostname
 
 hostnameTask :: T.Text -> Task
 hostnameTask n =
