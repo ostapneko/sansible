@@ -36,6 +36,7 @@ library
                        AnsibleModules.Git,
                        AnsibleModules.GetUrl,
                        AnsibleModules.Group,
+                       AnsibleModules.Hostname,
                        AnsibleModules.Lineinfile,
                        AnsibleModules.Pip,
                        AnsibleModules.PostgresqlUser,
