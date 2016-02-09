@@ -1,5 +1,6 @@
 module AnsibleModules.DebConf
  ( DebConf(..)
+ , ValueType(..)
  , defaultDebConf
  , debConfTask
  ) where
