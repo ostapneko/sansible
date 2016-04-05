@@ -1,4 +1,7 @@
 # Overview
+
+**This is deprecated in favour of the [Scala version](https://github.com/citycontext/sansible) which provides an exhaustive modeling of Ansible's modules.**
+
 Sansible provides a way to transpile Haskell code into YAML file suitable to be used as Ansible playbooks.
 
 The reasons to do that are:
